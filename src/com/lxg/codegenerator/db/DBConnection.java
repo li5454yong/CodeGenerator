@@ -16,6 +16,12 @@ import org.slf4j.LoggerFactory;
 import com.lxg.codegenerator.model.DBTable;
 import com.lxg.codegenerator.util.ReadProperties;
 
+/**
+ * 获取数据库连接
+ * @author lxg
+ *
+ * 2016年5月3日下午8:16:34
+ */
 public class DBConnection {
 
 	private static Logger logger = LoggerFactory.getLogger(DBConnection.class);
@@ -118,28 +124,5 @@ public class DBConnection {
         return this;
     }
 	
-	@Test
-	public void demo(){
-		try {
-			PreparedStatement statement = getPreparedStatement("SELECT * FROM information_schema.tables WHERE table_schema = ?");
-			if(statement != null){
-				statement.setString(1, "filesys");
-				ResultSet set = statement.executeQuery();
-				if(set != null){
-					List<DBTable> list = new ArrayList<DBTable>();
-					DBTable table = null;
-					while(set.next()){
-						table = new DBTable();
-						table.setTableComment(set.getString("table_name"));
-						list.add(table);
-					}
-				}
-				
-			}
-		
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	
 }

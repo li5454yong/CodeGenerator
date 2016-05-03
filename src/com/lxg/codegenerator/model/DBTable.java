@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 public class DBTable {
 
+	private String dateBase;
+	
 	private String tableName;
 	
 	private String tableComment;
@@ -32,6 +34,14 @@ public class DBTable {
 
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public String getDateBase() {
+		return dateBase;
+	}
+
+	public void setDateBase(String dateBase) {
+		this.dateBase = dateBase;
 	}
 	
 	
