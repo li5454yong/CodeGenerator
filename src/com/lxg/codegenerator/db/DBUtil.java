@@ -15,7 +15,7 @@ import com.lxg.codegenerator.model.DBTableColumn;
 /**
  * @author lxg
  *
- *         2016年5月3日下午8:16:21
+ * 2016年5月3日下午8:16:21
  */
 public class DBUtil {
 
@@ -40,7 +40,7 @@ public class DBUtil {
 					DBTable table = null;
 					while (set.next()) {
 						table = new DBTable();
-						table.setTableComment(set.getString("table_name"));
+						table.setTableName(set.getString("table_name"));
 						table.setDateBase(table_schema);
 						table.setTableComment(set.getString("table_comment"));
 						table.setTimestamp(set.getTimestamp("create_time"));
