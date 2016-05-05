@@ -1,0 +1,55 @@
+package {package};
+
+import java.util.List;
+import java.util.Map;
+
+import {importIBaseMapper};
+import {importIBaseService};
+
+public class BaseServiceImpl<T,I extends IBaseMapper<T>> implements IBaseService<T>{
+	
+	private I baseMapper;
+
+	public I getBaseMapper() {
+		return baseMapper;
+	}
+
+	public void setBaseMapper(I baseMapper) {
+		this.baseMapper = baseMapper;
+	}
+
+	public int insert(T po) {
+		return baseMapper.insert(po);
+	}
+
+	public int delete(Map<String, Object> param) {
+		return baseMapper.delete(param);
+	}
+
+	public int deleteByIds(List<String> list) {
+		return baseMapper.deleteByIds(list);
+	}
+    
+	public int update(T po) {
+		return baseMapper.update(po);
+	}
+
+	public T get(Map<String, Object> param) {
+		return baseMapper.get(param);
+	}
+
+	public List<T> list(Map<String, Object> param) {
+		return baseMapper.list(param);
+	}
+
+	public int getCount(Map<String,Object> param) {
+		return baseMapper.getCount(param);
+	}
+	
+	public List<T> workArealist(Map<String, Object> param) {
+		return baseMapper.workArealist(param);
+	}
+
+	
+
+}

@@ -1,6 +1,5 @@
 package com.lxg.codegenerator.creater;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,13 +38,16 @@ public class Creater {
 	@Test
 	public void create(){
 		this.tableList = dbUtil.getTableList("filesys");
+		
 		for(DBTable table : tableList){
 			tableColumnList = dbUtil.getDBTableColumnList(table.getDateBase(), table.getTableName());
 			entity = entity.init(entity);
 			entity.replaceAll(table.getTableName());
-			String result = createEntity();
+			createEntity();
 			logger.info(table.getTableName()+".java生成完毕");
 		}
+		createIBaseService();
+		createIBaseServiceImpl();
 		
 	}
 	
@@ -53,8 +55,7 @@ public class Creater {
 	 * 生成实体类
 	 * @return
 	 */
-	public String createEntity(){
-		
+	public void createEntity(){
 		try {
 			String path = FileUtil.createFile("d:/test", entity.getEntityFilePath());
 			
@@ -70,9 +71,37 @@ public class Creater {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
 	}
 	
+	/**
+	 * 生成baseservice
+	 */
+	public void createIBaseService(){
+		try {
+			String path = FileUtil.createFile("d:/test", FileUtil.getFileDir(entity.getIserviceFilePath())+"IBaseService.java");
+			String content = FileUtil.readResourceFile(dir+"ibaseservice.tlp");
+			content = Utils.parseTemplate(content, "package", entity.getIservicePackage());
+			FileUtil.writeContentToFile(path, content);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 生成baseserviceImpl
+	 */
+	public void createIBaseServiceImpl(){
+		try {
+			String path = FileUtil.createFile("d:/test", FileUtil.getFileDir(entity.getServiceFilePath())+"BaseServiceImpl.java");
+			String content = FileUtil.readResourceFile(dir+"ibaseserviceImpl.tlp");
+			content = Utils.parseTemplate(content, "package", entity.getServiceFilePath());
+			content = Utils.parseTemplate(content, "importIBaseService", entity.getIservicePackage()+".IBaseService");
+			content = Utils.parseTemplate(content, "importIBaseMapper", entity.getDaoPackage()+".IBaseMapper");
+			FileUtil.writeContentToFile(path, content);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * 生成实体类中属性列表
 	 * @return
