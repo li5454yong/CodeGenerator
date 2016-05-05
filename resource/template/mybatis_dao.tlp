@@ -1,0 +1,10 @@
+package {package};
+
+import org.springframework.stereotype.Repository;
+
+import {importEntity};
+
+@Repository
+public interface I{entity}Dao extends IBaseMapper<{entity}> {
+	
+}

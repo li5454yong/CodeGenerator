@@ -37,7 +37,6 @@ public class Creater {
 	
 	@Test
 	public void create(){
-		this.tableList = dbUtil.getTableList("filesys");
 		
 		for(DBTable table : tableList){
 			tableColumnList = dbUtil.getDBTableColumnList(table.getDateBase(), table.getTableName());
@@ -45,10 +44,11 @@ public class Creater {
 			entity.replaceAll(table.getTableName());
 			createEntity();
 			logger.info(table.getTableName()+".java生成完毕");
+			createMyBatisDao();
 		}
 		createIBaseService();
 		createIBaseServiceImpl();
-		
+		createIBaseMapper();
 	}
 	
 	/**
@@ -74,6 +74,40 @@ public class Creater {
 	}
 	
 	/**
+	 * 生成MyBatisDao
+	 */
+	public void createMyBatisDao(){
+		try {
+			String path = FileUtil.createFile("d:/test", entity.getDaoFilePath());
+			
+			String content = FileUtil.readResourceFile(dir+"mybatis_dao.tlp");
+			
+			content = Utils.parseTemplate(content, "package", entity.getDaoPackage());
+			content = Utils.parseTemplate(content, "importEntity", entity.getEntityPackage()+"."+entity.getEntityName());
+			content = Utils.parseTemplate(content, "entity", entity.getEntityName());
+			FileUtil.writeContentToFile(path, content);
+			logger.info(entity.getEntityName()+"Dao.java生成完毕");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 生成IBaseMapper
+	 */
+	public void createIBaseMapper(){
+		try {
+			String path = FileUtil.createFile("d:/test", FileUtil.getFileDir(entity.getDaoFilePath())+"IBaseMapper.java");
+			String content = FileUtil.readResourceFile(dir+"ibasemapper.tlp");
+			content = Utils.parseTemplate(content, "package", entity.getDaoPackage());
+			FileUtil.writeContentToFile(path, content);
+			logger.info("IBaseMapper.java生成完毕");
+		} catch (Exception e) {
+			logger.error("IBaseMapper.java生成失败");
+			e.printStackTrace();
+		}
+	}
+	/**
 	 * 生成baseservice
 	 */
 	public void createIBaseService(){
@@ -82,6 +116,7 @@ public class Creater {
 			String content = FileUtil.readResourceFile(dir+"ibaseservice.tlp");
 			content = Utils.parseTemplate(content, "package", entity.getIservicePackage());
 			FileUtil.writeContentToFile(path, content);
+			logger.info("IBaseService.java生成完毕");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -94,10 +129,11 @@ public class Creater {
 		try {
 			String path = FileUtil.createFile("d:/test", FileUtil.getFileDir(entity.getServiceFilePath())+"BaseServiceImpl.java");
 			String content = FileUtil.readResourceFile(dir+"ibaseserviceImpl.tlp");
-			content = Utils.parseTemplate(content, "package", entity.getServiceFilePath());
+			content = Utils.parseTemplate(content, "package", entity.getServicePackage());
 			content = Utils.parseTemplate(content, "importIBaseService", entity.getIservicePackage()+".IBaseService");
 			content = Utils.parseTemplate(content, "importIBaseMapper", entity.getDaoPackage()+".IBaseMapper");
 			FileUtil.writeContentToFile(path, content);
+			logger.info("BaseServiceImpl.java生成完毕");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

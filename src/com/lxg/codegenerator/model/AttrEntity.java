@@ -242,9 +242,9 @@ public class AttrEntity {
 		entity.setEntityPackage(entityPackage+"entity");
 		entity.setEntityFilePath(Utils.packToFilePath(entityPackage+"entity")+entityName+".java");
 		
-		entity.setDaoName(entityName + "Mapper");
-		entity.setDaoPackage(entityPackage+"Mapper");
-		entity.setDaoFilePath(Utils.packToFilePath(entityPackage+"Mapper")+entityName+"Mapper.java");
+		entity.setDaoName(entityName + "Dao");
+		entity.setDaoPackage(entityPackage+"dao");
+		entity.setDaoFilePath(Utils.packToFilePath(entityPackage+"dao")+entityName+"Dao.java");
 		
 		entity.setServiceName(entityName+"ServiceImpl");
 		entity.setServicePackage(entityPackage+"service.impl");
@@ -253,6 +253,8 @@ public class AttrEntity {
 		entity.setIservicePackage(entityPackage+"service");
 		entity.setIserviceFilePath(Utils.packToFilePath(entityPackage+"service")+"I"+entityName+"Service.java");
 		
+		entity.setMapName(entityName+"Mapper");
+		entity.setMapFilePath(entityName+"Mapper.xml");
 		
 		return entity;
 	}
