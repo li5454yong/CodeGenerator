@@ -27,6 +27,7 @@ public class DBUtil {
 	 * 获取表信息
 	 * @param table_schema
 	 * @return
+	 *  oracle下获取表信息：SELECT * FROM all_tables WHERE OWNER='BD_RMM'
 	 */
 	public List<DBTable> getTableList(String table_schema) {
 		String sql = "SELECT * FROM information_schema.tables WHERE table_schema = ?";
@@ -57,6 +58,10 @@ public class DBUtil {
 		return list;
 	}
 	
+	/**
+	 * 获取表结构
+	 * oracle下获取表结构 select * from user_tab_columns where table_name='RBKCARD'
+	 */
 	public List<DBTableColumn> getDBTableColumnList(String schema,String table){
 		List<DBTableColumn> list = new ArrayList<DBTableColumn>();
 		String sql = "SELECT DISTINCT * FROM information_schema.COLUMNS WHERE "

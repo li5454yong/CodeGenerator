@@ -9,13 +9,6 @@
     <sql id="Base_Column_List">
         {FeildJoinId}
     </sql>
-    
-    <select id="selectByPrimaryColumn" parameterType="java.lang.{PrimaryJavaType}" resultMap="BaseResultMap">
-        select 
-        <include refid="Base_Column_List" />
-        from {TableName}
-        where {PrimaryColumn} = #{{PrimaryFeild},jdbcType={PrimaryJdbcType}}
-    </select>
   
     <select id="select" parameterType="{EntityPackage}" resultMap="BaseResultMap">
         select 

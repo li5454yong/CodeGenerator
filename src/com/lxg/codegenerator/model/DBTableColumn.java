@@ -110,6 +110,11 @@ public class DBTableColumn {
 		this.privileges = privileges;
 	}
     
-    
-    
+    /**
+     * 判断是否是主键
+     * @return
+     */
+	public boolean isPrimaryKey(){
+        return columnKey != null && columnKey.equalsIgnoreCase("PRI");
+    }
 }

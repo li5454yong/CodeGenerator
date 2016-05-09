@@ -30,6 +30,7 @@ public class Creater {
 	private static String dir = "template/";
 	private AttrEntity entity = new AttrEntity();
 	private boolean hasDate = false, hasTimestamp = false;
+	private String tableName = null;
 	
 	public Creater(){
 		this.tableList = dbUtil.getTableList("filesys");
@@ -39,12 +40,14 @@ public class Creater {
 	public void create(){
 		
 		for(DBTable table : tableList){
-			tableColumnList = dbUtil.getDBTableColumnList(table.getDateBase(), table.getTableName());
+			tableName = table.getTableName();
+			tableColumnList = dbUtil.getDBTableColumnList(table.getDateBase(), tableName);
 			entity = entity.init(entity);
 			entity.replaceAll(table.getTableName());
 			createEntity();
 			logger.info(table.getTableName()+".java生成完毕");
 			createMyBatisDao();
+			createMapper();
 		}
 		createIBaseService();
 		createIBaseServiceImpl();
@@ -72,6 +75,31 @@ public class Creater {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * 生成mapper.xml文件
+	 */
+	public void createMapper(){
+		try {
+			String path = FileUtil.createFile("d:/test", entity.getMapFilePath());
+			
+			String content = FileUtil.readResourceFile(dir+"mysql_mapper.tlp");
+			content = Utils.parseTemplate(content, "MapperPackage", entity.getDaoPackage()+"."+entity.getDaoName());
+			content = Utils.parseTemplate(content, "EntityPackage", entity.getEntityPackage()+"."+entity.getEntityName());
+			content = Utils.parseTemplate(content, "PrimaryColumn", getPrimaryColumn());
+			content = Utils.parseTemplate(content, "PrimaryJdbcType", getPrimaryJdbcType());
+			content = Utils.parseTemplate(content, "PrimaryFeild", Utils.columnToFeild(getPrimaryColumn()));
+			content = Utils.parseTemplate(content, "FeildMapList", getFeildMapList());
+			content = Utils.parseTemplate(content, "FeildJoinId", getFeildJoinId());
+			content = Utils.parseTemplate(content, "TableName", tableName);
+			content = Utils.parseTemplate(content, "EntityPackage", entity.getEntityPackage()+"."+entity.getEntityName());
+			content = Utils.parseTemplate(content, "FeildIfList", getFeildIfList());
+			FileUtil.writeContentToFile(path, content);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	/**
 	 * 生成MyBatisDao
@@ -166,6 +194,69 @@ public class Creater {
 	}
 	
 	/**
+	 * 生成查询基础字段
+	 * @return
+	 */
+	public String getFeildJoinId(){
+		 StringBuffer feildJoinId = new StringBuffer();
+		 if(tableColumnList.size() != 0){
+			 for(int i=0;i<tableColumnList.size();i++){
+				 feildJoinId.append(tableColumnList.get(i).getColumnName());
+				 if(i<(tableColumnList.size()-1)){
+					 feildJoinId.append(",");
+				 }
+			 }
+		 }
+		 return feildJoinId.toString();
+	}
+	
+	/**
+	 * 生成查询时的if列表
+	 * @return
+	 */
+	public String getFeildIfList(){
+		StringBuffer feildIfList = new StringBuffer();
+		 if(tableColumnList.size() != 0){
+			 StringBuffer feild = new StringBuffer(Consts.TAB2);
+             feild.append("<if test=\"{0} != null and {0} != ''\" >\r\n")
+                 .append(Consts.TAB3).append("and {1} = #{{0}}\r\n")
+                 .append(Consts.TAB2).append("</if>\r\n");
+             DBTableColumn column = null;
+			 for(int i=0;i<tableColumnList.size();i++){
+				column = tableColumnList.get(i);
+				String ifList = feild.toString();
+				ifList = Utils.parseTemplate(ifList, "0", Utils.columnToFeild(column.getColumnName()));
+				ifList = Utils.parseTemplate(ifList, "1", column.getColumnName());
+				feildIfList.append(ifList); 
+			 }
+		 }
+		 
+		 return feildIfList.toString();
+	}
+	
+	/**
+	 * 生成mapper.xml文件中resultMap
+	 * @return
+	 */
+	public String getFeildMapList(){
+		StringBuffer feildMapList = new StringBuffer();
+		if(tableColumnList.size() != 0){
+			
+			for(DBTableColumn column : tableColumnList){
+				String maps = "<result column=\"{0}\" property=\"{1}\" />";
+				if(!column.isPrimaryKey()){
+					maps = Utils.parseTemplate(maps, "0", column.getColumnName());
+					maps = Utils.parseTemplate(maps, "1", Utils.columnToFeild(column.getColumnName()));
+					feildMapList.append(Consts.TAB2).append(maps).append(Consts.ENTER);
+				}
+				
+			}
+			
+		}
+		return feildMapList.toString();
+	}
+	
+	/**
 	 * 生成get、set函数
 	 * @return
 	 */
@@ -185,5 +276,51 @@ public class Creater {
 			}
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * 获取主键字段名
+	 * @return
+	 */
+	public String getPrimaryColumn(){
+		String column = "";
+		DBTableColumn tableColumn = getPrimaryKeyColumn();
+		if(tableColumn != null){
+			if(tableColumn.isPrimaryKey()){
+				column = tableColumn.getColumnName();
+			}
+		}
+		return column;
+	}
+	
+	/**
+	 * 获取主键的数据库字段类型
+	 * @return
+	 */
+	public String getPrimaryJdbcType(){
+		String jdbcType = "";
+		DBTableColumn tableColumn = getPrimaryKeyColumn();
+		if(tableColumn != null){
+			if(tableColumn.isPrimaryKey()){
+				jdbcType = tableColumn.getDataType();
+			}
+		}
+		 return jdbcType == null ? "varchar" : jdbcType;
+	}
+	
+	/**
+	 * 获取主键字段
+	 * @return
+	 */
+	public DBTableColumn getPrimaryKeyColumn(){
+		DBTableColumn tableColumn = null;
+		if(tableColumnList.size() != 0){
+			for(DBTableColumn column : tableColumnList){
+				if(column.isPrimaryKey()){
+					tableColumn = column;
+				}
+			}
+		}
+		return tableColumn;
 	}
 }

@@ -254,7 +254,8 @@ public class AttrEntity {
 		entity.setIserviceFilePath(Utils.packToFilePath(entityPackage+"service")+"I"+entityName+"Service.java");
 		
 		entity.setMapName(entityName+"Mapper");
-		entity.setMapFilePath(entityName+"Mapper.xml");
+		entity.setMapFilePath(Utils.packToFilePath(entityPackage+"mapper")+entityName+"Mapper.xml");
+		
 		
 		return entity;
 	}
