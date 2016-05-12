@@ -3,7 +3,6 @@ package com.lxg.codegenerator.util;
 import org.apache.commons.lang3.StringUtils;
 
 
-
 /**
  * 
  * @author 李新广
@@ -73,6 +72,28 @@ public class Utils {
         } catch (Exception e) {
         }
         return content;
+    }
+	
+	public static String getJavaType(String jdbcType) {
+        String javaType = Consts.OBJECT;
+        if (jdbcType.equalsIgnoreCase("varchar") || jdbcType.equalsIgnoreCase("char")) {
+            javaType = Consts.STRING;
+        } else if (jdbcType.equalsIgnoreCase("int") || jdbcType.equalsIgnoreCase("integer")) {
+            javaType = Consts.INTEGER;
+        } else if (jdbcType.equalsIgnoreCase("long") || jdbcType.equalsIgnoreCase("bigint")) {
+            javaType = Consts.LONG;
+        } else if (jdbcType.equalsIgnoreCase("float") || jdbcType.equalsIgnoreCase("number")) {
+            javaType = Consts.FLOAT;
+        } else if (jdbcType.equalsIgnoreCase("double") || jdbcType.equalsIgnoreCase("decimal")) {
+            javaType = Consts.DOUBLE;
+        } else if (jdbcType.equalsIgnoreCase("date") || jdbcType.equalsIgnoreCase("datetime")) {
+            javaType = Consts.DATE;
+        } else if (jdbcType.equalsIgnoreCase("timestamp") || jdbcType.equalsIgnoreCase("time")) {
+            javaType = Consts.TIMESTAMP;
+        } else if (jdbcType.equalsIgnoreCase("blob")) {
+            javaType = Consts.LBYTE;
+        }
+        return javaType;
     }
 	
 	/**

@@ -93,6 +93,9 @@ public class Creater {
 			content = Utils.parseTemplate(content, "TableName", tableName);
 			content = Utils.parseTemplate(content, "EntityPackage", entity.getEntityPackage()+"."+entity.getEntityName());
 			content = Utils.parseTemplate(content, "FeildIfList", getFeildIfList());
+			content = Utils.parseTemplate(content, "PrimaryJavaType", getPrimaryJavaType());
+			content = Utils.parseTemplate(content, "InsertIfFeild", getInsertIfFeild());
+			content = Utils.parseTemplate(content, "InsertIfFeildVal", getInsertIfFeildVal());
 			FileUtil.writeContentToFile(path, content);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -291,6 +294,64 @@ public class Creater {
 			}
 		}
 		return column;
+	}
+	
+	/**
+	 * 生成insert语句的插入字段
+	 */
+	public String getInsertIfFeildVal(){
+		StringBuilder sb = new StringBuilder();
+		if(tableColumnList.size() != 0){
+			int i = 0;
+			for(DBTableColumn column : tableColumnList){
+				String content = "";
+				if(i == 0){
+					content = "<if test=\"{0} != null and {0} != ''\">#{{1}}</if>";
+				}else{
+					content = "<if test=\"{0} != null and {0} != ''\">,#{{1}}</if>";
+				}
+				content = Utils.parseTemplate(content, "0", Utils.columnToFeild(column.getColumnName()));
+				content = Utils.parseTemplate(content, "1", Utils.columnToFeild(column.getColumnName()));
+				sb.append(Consts.TAB2).append(content).append(Consts.ENTER);
+				i++;
+			}
+		}
+		return sb.toString();
+	}
+	/**
+	 * 生成insert语句的要插入字段
+	 */
+	public String getInsertIfFeild(){
+		StringBuilder sb = new StringBuilder();
+		if(tableColumnList.size() != 0){
+			int i = 0;
+			for(DBTableColumn column : tableColumnList){
+				String content = "";
+				if(i == 0){
+					content = "<if test=\"{0} != null and {0} != ''\">{1}</if>";
+				}else{
+					content = "<if test=\"{0} != null and {0} != ''\">,{1}</if>";
+				}
+				content = Utils.parseTemplate(content, "0", Utils.columnToFeild(column.getColumnName()));
+				content = Utils.parseTemplate(content, "1", column.getColumnName());
+				sb.append(Consts.TAB2).append(content).append(Consts.ENTER);
+				i++;
+			}
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * 获取主键的java类型
+	 * @return
+	 */
+	public String getPrimaryJavaType(){
+		String primaryKeyJaveType = null;
+		DBTableColumn column = getPrimaryKeyColumn();
+		if(column != null){
+			primaryKeyJaveType = Utils.getJavaType(column.getDataType());
+		}
+		return primaryKeyJaveType == null ? "varchar" : primaryKeyJaveType;
 	}
 	
 	/**

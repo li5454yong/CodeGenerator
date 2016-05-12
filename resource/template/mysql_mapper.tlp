@@ -24,22 +24,13 @@
     
     <insert id="insert" parameterType="{EntityPackage}">
         insert into {TableName} (
-{FeildJoin}
+{InsertIfFeild}
         )
         values (
-{FeildMapJoin}
+{InsertIfFeildVal}
         )
     </insert>
   
-    <insert id="insertSelective" parameterType="{EntityPackage}">
-        insert into {TableName}
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-{FeildIfJoin}
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-{FeildIfMapJoin}
-        </trim>
-    </insert>
   
     <update id="updateByPrimaryColumnSelective" parameterType="{EntityPackage}">
         update {TableName}
