@@ -32,48 +32,13 @@
     </insert>
   
   
-    <update id="updateByPrimaryColumnSelective" parameterType="{EntityPackage}">
+    <update id="update" parameterType="{EntityPackage}">
         update {TableName}
         <set>
 {FeildIfSetList}
         </set>
-        where {PrimaryColumn} = #{{PrimaryFeild},jdbcType={PrimaryJdbcType}}
+        where 1=1
+{FeildIfList}
     </update>
     
-    <update id="updateByPrimaryColumn" parameterType="{EntityPackage}">
-        update {TableName}
-        set 
-{FeildSetList}
-        where {PrimaryColumn} = #{{PrimaryFeild},jdbcType={PrimaryJdbcType}}
-    </update>
-    
-    <insert id="insertBatch" parameterType="java.util.List">  
-        insert into {TableName} (
-            {FeildJoin}
-        )
-        values 
-        <foreach collection="list" index="index" item="item" separator=",">  
-        (
-{ForeachFeildMapJoin}
-        )
-        </foreach>
-    </insert>
-  
-    <update id="updateBatch" parameterType="java.util.List"> 
-        update {TableName}
-        set 
-{FeildSetList}
-        where {PrimaryColumn} = #{{PrimaryFeild},jdbcType={PrimaryJdbcType}}
-        <foreach close=")" collection="idList" index="index" item="item" open="(" separator=",">     
-            #{item}
-        </foreach>
-    </update>
- 
-    <delete id="deleteBatch" parameterType="java.util.List"> 
-        DELETE FROM {TableName} WHERE {PrimaryColumn} IN 
-        <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">  
-            #{item}  
-        </foreach> 
-    </delete>
- 
 </mapper>

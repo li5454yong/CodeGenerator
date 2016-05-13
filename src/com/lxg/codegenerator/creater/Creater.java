@@ -96,6 +96,7 @@ public class Creater {
 			content = Utils.parseTemplate(content, "PrimaryJavaType", getPrimaryJavaType());
 			content = Utils.parseTemplate(content, "InsertIfFeild", getInsertIfFeild());
 			content = Utils.parseTemplate(content, "InsertIfFeildVal", getInsertIfFeildVal());
+			content = Utils.parseTemplate(content, "FeildIfSetList", getFeildIfSetList());
 			FileUtil.writeContentToFile(path, content);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -294,6 +295,26 @@ public class Creater {
 			}
 		}
 		return column;
+	}
+	
+	public String getFeildIfSetList(){
+		StringBuilder sb = new StringBuilder();
+		if(tableColumnList.size() != 0){
+			int i = 0;
+			for(DBTableColumn column : tableColumnList){
+				String content = "";
+				if(i == 0){
+					content = "<if test=\"{0} != null and {0} != ''\">{1}=#{{0}}</if>";
+				}else{
+					content = "<if test=\"{0} != null and {0} != ''\">,{1}=#{{0}}</if>";
+				}
+				content = Utils.parseTemplate(content, "0", Utils.columnToFeild(column.getColumnName()));
+				content = Utils.parseTemplate(content, "1", column.getColumnName());
+				sb.append(Consts.TAB2).append(content).append(Consts.ENTER);
+				i++;
+			}
+		}
+		return sb.toString();
 	}
 	
 	/**
