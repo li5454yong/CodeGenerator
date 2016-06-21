@@ -208,7 +208,7 @@ public class AttrEntity {
 
 		this.daoName = Utils.parseTemplate(this.daoName, "EntityName", this.entityName);
 		this.daoPackage = Utils.parseTemplate(this.daoPackage, "EntityName", this.entityName);
-		this.daoFilePath = Utils.parseTemplate(this.daoFilePath, "EntityName", this.entityName);
+		this.daoFilePath = Utils.parseTemplate(this.daoFilePath, "EntityName", "I"+this.entityName);
 
 		this.serviceName = Utils.parseTemplate(this.serviceName, "EntityName", this.entityName);
 		this.servicePackage = Utils.parseTemplate(this.servicePackage, "EntityName", this.entityName);

@@ -118,7 +118,7 @@ public class Creater {
 			content = Utils.parseTemplate(content, "importEntity", entity.getEntityPackage()+"."+entity.getEntityName());
 			content = Utils.parseTemplate(content, "entity", entity.getEntityName());
 			FileUtil.writeContentToFile(path, content);
-			logger.info(entity.getEntityName()+"Dao.java生成完毕");
+			logger.info("I"+entity.getEntityName()+"Dao.java生成完毕");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -275,7 +275,7 @@ public class Creater {
 				content = Utils.parseTemplate(content, "AttrName", Utils.firstCharToUpperCase(attr));
 				content = Utils.parseTemplate(content, "attrName", Utils.firstCharToLowerCase(attr));
 				content = Utils.parseTemplate(content, "comment", StringUtils.isNotEmpty(column.getColumnComment()) ? column.getColumnComment() : column.getColumnName());
-				content = Utils.parseTemplate(content, "JavaType", Utils.getVarJavaType(column.getDataType()));
+				content = Utils.parseTemplate(content, "JavaType", Utils.getJavaType(column.getDataType()));
 				sb.append(content).append(Consts.ENTER);
 			}
 		}

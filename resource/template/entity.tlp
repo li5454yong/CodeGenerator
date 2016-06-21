@@ -1,6 +1,6 @@
 package {package};
-{importDate}
-{importTimestamp}
+{importDate};
+{importTimestamp};
 public class {EntityName} implements java.io.Serializable {
 
 {attr_list}
